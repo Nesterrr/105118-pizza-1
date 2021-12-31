@@ -1,0 +1,20 @@
+export const sizes = ["small", "normal", "big"];
+export const dough = ["light", "large"];
+export const sauces = ["tomato", "creamy"];
+export const ingridients = [
+  "mushrooms",
+  "cheddar",
+  "salami",
+  "ham",
+  "ananas",
+  "bacon",
+  "onion",
+  "chile",
+  "jalapeno",
+  "olives",
+  "tomatoes",
+  "salmon",
+  "mozzarella",
+  "parmesan",
+  "blue_cheese",
+];
