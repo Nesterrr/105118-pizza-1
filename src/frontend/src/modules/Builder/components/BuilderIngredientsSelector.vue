@@ -16,7 +16,7 @@
               type="radio"
               name="sauce"
               :value="sauce.sauceVariant"
-              @click="onSelectSauce(sauce)"
+              @click="onSelectSauce(sauce.id)"
             />
             <span>{{ sauce.name }}</span>
           </label>
@@ -31,26 +31,40 @@
               v-for="ingredient in ingredients"
               :key="ingredient.id"
             >
-              <SelectorItem
-                :ingridientName="ingredient.ingridientName"
-                :name="ingredient.name"
-              />
-
+              <AppDrag :transfer-data="ingredient">
+                <SelectorItem
+                  :ingridientName="ingredient.ingridientName"
+                  :name="ingredient.name"
+                />
+              </AppDrag>
               <div class="counter counter--orange ingredients__counter">
                 <button
                   type="button"
                   class="counter__button counter__button--minus"
-                  @click="onSelectIngredient(ingredient, '-')"
-                  :disabled="ingredient.quantity === 0"
+                  @click="onSelectIngredient(ingredient.id, '-')"
+                  :disabled="
+                    currentIngredients.find(
+                      ({ quantity, ingredientId }) =>
+                        ingredientId === ingredient.id && quantity === 0
+                    )
+                  "
                 >
                   <span class="visually-hidden">Меньше</span>
                 </button>
-                <CounterInput name="counter" :value="ingredient.quantity" />
+                <CounterInput
+                  name="counter"
+                  :value="getIngredientValueById(ingredient.id)"
+                />
                 <button
                   type="button"
                   class="counter__button counter__button--plus"
-                  @click="onSelectIngredient(ingredient, '+')"
-                  :disabled="ingredient.quantity >= 3"
+                  @click="onSelectIngredient(ingredient.id, '+')"
+                  :disabled="
+                    currentIngredients.find(
+                      ({ quantity, ingredientId }) =>
+                        ingredientId === ingredient.id && quantity >= 3
+                    )
+                  "
                 >
                   <span class="visually-hidden">Больше</span>
                 </button>
@@ -66,6 +80,7 @@
 import RadioButton from "@/common/components/RadioButton";
 import SelectorItem from "@/common/components/SelectorItem";
 import CounterInput from "@/common/components/CounterInput";
+import AppDrag from "@/common/components/AppDrag";
 
 export default {
   name: "BuilderIngredientsSelector",
@@ -73,6 +88,7 @@ export default {
     RadioButton,
     SelectorItem,
     CounterInput,
+    AppDrag,
   },
   props: {
     sauces: {
@@ -83,13 +99,27 @@ export default {
       type: Array,
       required: true,
     },
+    currentIngredients: {
+      type: Array,
+      required: true,
+    },
   },
   methods: {
-    onSelectIngredient(ingredient, sign) {
-      this.$emit("selectIngredient", ingredient, sign);
+    onSelectIngredient(id, sign) {
+      this.$emit("selectIngredient", id, sign);
     },
     onSelectSauce(sauce) {
       this.$emit("selectSauce", sauce);
+    },
+    getIngredientValueById(id) {
+      // console.log("id: ", this.currentIngredients);
+      const index = this.currentIngredients.findIndex((ingredient) => {
+        return ingredient.ingredientId === id;
+      });
+      // console.log("getIngredientValueById: ", index);
+      if (index === -1) return 0;
+      const value = this.currentIngredients[index].quantity;
+      return value ? value : 0;
     },
   },
 };

@@ -14,7 +14,7 @@
             name="diameter"
             :value="size.scale"
             className="visually-hidden"
-            @click="$emit('selectSize', size)"
+            @click="$emit('selectSize', size.id)"
           />
           <span>{{ size.name }}</span>
         </label>

@@ -1,20 +1,20 @@
 <template>
   <div class="content__constructor">
-    <div :class="`pizza pizza--foundation--${size}-${sauce}`">
+    <div
+      :class="`pizza pizza--foundation--${getDoughFromId(
+        doughId
+      )}-${getSauceFromId(sauceId)}`"
+    >
       <div class="pizza__wrapper">
-        <div v-for="ingredient in actualIngredients" :key="ingredient.id">
-          <div
-            v-for="ingredientItem in Array.from(
-              { length: ingredient.quantity },
-              (_junk, index) => index
-            )"
-            :key="ingredientItem"
-            :class="`pizza__filling pizza__filling--${getIngredienClasstModificator(
-              ingredient.ingridientName,
-              ingredientItem
-            )}`"
-          ></div>
-        </div>
+        <div
+          v-for="ingredient in currentIngredients.filter((currentIngredient) =>
+            Boolean(currentIngredient.quantity)
+          )"
+          :key="ingredient.ingredientId"
+          :class="`pizza__filling pizza__filling--${getIngredientNameById(
+            ingredient.ingredientId
+          )} ${getIngredienClasstModificator(ingredient.quantity)}`"
+        ></div>
       </div>
     </div>
   </div>
@@ -27,13 +27,17 @@ export default {
       type: Array,
       required: true,
     },
-    size: {
-      type: String,
-      default: "big",
+    currentIngredients: {
+      type: Array,
+      required: true,
     },
-    sauce: {
-      type: String,
-      default: "tomato",
+    doughId: {
+      type: Number,
+      default: 1,
+    },
+    sauceId: {
+      type: Number,
+      default: 1,
     },
   },
   computed: {
@@ -42,17 +46,27 @@ export default {
     },
   },
   methods: {
-    getIngredienClasstModificator(ingredient, index) {
-      switch (index) {
-        case 0:
-          return ingredient;
-        case 1:
-          return `${ingredient}--second`;
+    getIngredienClasstModificator(quantity) {
+      switch (quantity) {
         case 2:
-          return `${ingredient}--third`;
+          return `pizza__filling--second`;
+        case 3:
+          return `pizza__filling--third`;
         default:
-          return ingredient;
+          return "";
       }
+    },
+    getDoughFromId(id) {
+      const dough = ["small", "big"];
+      return dough[id - 1];
+    },
+    getSauceFromId(id) {
+      const sauces = ["tomato", "creamy"];
+      return sauces[id - 1];
+    },
+    getIngredientNameById(id) {
+      const result = this.ingredients.find((item) => item.id === id);
+      return result && result.ingridientName;
     },
   },
 };

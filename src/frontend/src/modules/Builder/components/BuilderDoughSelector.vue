@@ -16,7 +16,7 @@
             name="dought"
             :value="doughVariant.scale"
             className="visually-hidden"
-            @click="onSelectDough(doughVariant)"
+            @click="onSelectDough(doughVariant.id)"
           />
           <b>{{ doughVariant.name }}</b>
           <span>Из твердых сортов пшеницы</span>

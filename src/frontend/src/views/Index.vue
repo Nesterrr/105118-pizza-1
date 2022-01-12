@@ -14,6 +14,7 @@
         <BuilderIngredientsSelector
           :sauces="sauces"
           :ingredients="ingredients"
+          :currentIngredients="pizza1.ingredients"
           @selectIngredient="selectIngredient"
           @selectSauce="selectSauce"
         />
@@ -26,12 +27,15 @@
               placeholder="Введите название пиццы"
             />
           </label>
-          <BuilderPizzaView
-            :ingredients="pizza.ingredients"
-            :size="`${pizza.dough.scale === 'light' ? 'small' : 'big'}`"
-            :sauce="pizza.sauce.sauceVariant"
-          />
-          <BuilderPriceCounter :price="getPizzaPrice" />
+          <AppDrop @drop="moveIngedient">
+            <BuilderPizzaView
+              :ingredients="ingredients"
+              :currentIngredients="pizza1.ingredients"
+              :doughId="pizza1.doughId"
+              :sauceId="pizza1.sauceId"
+            />
+          </AppDrop>
+          <BuilderPriceCounter :price="getPizzaTotalPrice" />
         </AppLayoutContent>
       </AppLayoutMain>
     </body>
@@ -46,6 +50,7 @@ import BuilderSizeSelector from "@/modules/Builder/components/BuilderSizeSelecto
 import BuilderIngredientsSelector from "@/modules/Builder/components/BuilderIngredientsSelector";
 import BuilderPizzaView from "@/modules/Builder/components/BuilderPizzaView";
 import BuilderPriceCounter from "@/modules/Builder/components/BuilderPriceCounter";
+import AppDrop from "@/common/components/AppDrop";
 import pizza from "@/static/pizza.json";
 import { sizes, dough, sauces, ingridients } from "./helper";
 
@@ -60,6 +65,7 @@ export default {
     BuilderIngredientsSelector,
     BuilderPizzaView,
     BuilderPriceCounter,
+    AppDrop,
   },
   data() {
     const ingredients = pizza.ingredients.map((ingridient, index) => ({
@@ -96,53 +102,62 @@ export default {
         },
         ingredients,
       },
-      price: 0,
+      pizza1: {
+        name: "",
+        sauceId: 1,
+        doughId: 1,
+        sizeId: 1,
+        quantity: 0,
+        ingredients: [],
+      },
     };
   },
   computed: {
-    getPizzaPrice() {
-      const { dough, size, sauce } = this.pizza;
-      return (
-        (dough.price +
-          sauce.price +
-          this.ingredients.reduce(
-            (prev, current) => prev + current.quantity * current.price,
-            0
-          )) *
-        size.multiplier
-      );
+    getPizzaTotalPrice() {
+      return 10;
+      // const { dough, size, sauce } = this.pizza;
+      // return (
+      //   (dough.price +
+      //     sauce.price +
+      //     this.ingredients.reduce(
+      //       (prev, current) => prev + current.quantity * current.price,
+      //       0
+      //     )) *
+      //   size.multiplier
+      // );
     },
   },
   methods: {
-    selectDough(param) {
-      this.pizza = {
-        ...this.pizza,
-        dough: this.dough.find((item) => item.id === param.id),
-      };
+    selectDough(id) {
+      this.pizza1.doughId = id;
     },
-    selectSize(param) {
-      this.pizza = {
-        ...this.pizza,
-        size: this.sizes.find((item) => item.id === param.id),
-      };
+    selectSize(id) {
+      this.pizza1.sizeId = id;
     },
-    selectIngredient(param, sign) {
-      const index = this.pizza.ingredients.findIndex(
-        (elem) => elem.id === param.id
+    selectIngredient(id, sign) {
+      const index = this.pizza1.ingredients.findIndex(
+        (elem) => elem.ingredientId === id
       );
-      if (sign === "+") {
-        this.pizza.ingredients[index].quantity =
-          this.pizza.ingredients[index].quantity + 1;
+      if (index === -1) {
+        this.pizza1.ingredients.push({ quantity: 1, ingredientId: id });
       } else {
-        this.pizza.ingredients[index].quantity =
-          this.pizza.ingredients[index].quantity - 1;
+        if (sign === "+") {
+          this.pizza1.ingredients[index].quantity += 1;
+        } else {
+          this.pizza1.ingredients[index].quantity -= 1;
+        }
       }
     },
-    selectSauce(param) {
-      this.pizza = {
-        ...this.pizza,
-        sauce: this.sauces.find((item) => item.id === param.id),
-      };
+    selectSauce(id) {
+      this.pizza1.sauceId = id;
+    },
+    moveIngedient(ingredient) {
+      const ingredientValue = this.pizza1.ingredients.find(
+        (item) => item.ingredientId === ingredient.id
+      );
+      if (ingredientValue?.quantity < 3 || !ingredientValue) {
+        this.selectIngredient(ingredient.id, "+");
+      }
     },
   },
 };
