@@ -14,7 +14,7 @@
         <BuilderIngredientsSelector
           :sauces="sauces"
           :ingredients="ingredients"
-          :currentIngredients="pizza1.ingredients"
+          :currentIngredients="pizza.ingredients"
           @selectIngredient="selectIngredient"
           @selectSauce="selectSauce"
         />
@@ -30,9 +30,9 @@
           <AppDrop @drop="moveIngedient">
             <BuilderPizzaView
               :ingredients="ingredients"
-              :currentIngredients="pizza1.ingredients"
-              :doughId="pizza1.doughId"
-              :sauceId="pizza1.sauceId"
+              :currentIngredients="pizza.ingredients"
+              :doughId="pizza.doughId"
+              :sauceId="pizza.sauceId"
             />
           </AppDrop>
           <BuilderPriceCounter :price="getPizzaTotalPrice" />
@@ -88,71 +88,66 @@ export default {
         scale: sizes[index],
       })),
       pizza: {
-        dough: {
-          price: 0,
-          scale: "small",
-        },
-        size: {
-          multiplier: 1,
-          scale: "big",
-        },
-        sauce: {
-          price: 0,
-          sauceName: "tomato",
-        },
-        ingredients,
-      },
-      pizza1: {
         name: "",
         sauceId: 1,
         doughId: 1,
         sizeId: 1,
-        quantity: 0,
         ingredients: [],
       },
     };
   },
   computed: {
     getPizzaTotalPrice() {
-      return 10;
+      const { doughId } = this.pizza;
+      const dough = this.dough.find((item) => item.id === doughId);
+      // const sauce = this.sauces.find((item) => item.id === sauceId);
+      // let ingredients = this.pizza.ingridients
+      //   ? this.pizza.ingridients.reduce((prev, current) => {
+      //       const ingredient = this.ingridients.find(
+      //         (item) => item.id === current.ingredientId
+      //       );
+      //       return prev + current.quantity * ingredient.price;
+      //     }, 0)
+      //   : 0;
+      return dough?.price; // + sauce?.price + ingredients; //this.dough.find((item) => item.id === doughId);
       // const { dough, size, sauce } = this.pizza;
       // return (
       //   (dough.price +
       //     sauce.price +
-      //     this.ingredients.reduce(
-      //       (prev, current) => prev + current.quantity * current.price,
-      //       0
-      //     )) *
+      // this.ingredients.reduce(
+      //   (prev, current) => prev + current.quantity * current.price,
+      //   0
+      // )) *
       //   size.multiplier
       // );
     },
   },
   methods: {
     selectDough(id) {
-      this.pizza1.doughId = id;
+      this.pizza.doughId = id;
     },
     selectSize(id) {
-      this.pizza1.sizeId = id;
+      this.pizza.sizeId = id;
     },
     selectIngredient(id, sign) {
-      const index = this.pizza1.ingredients.findIndex(
+      const index = this.pizza.ingredients.findIndex(
         (elem) => elem.ingredientId === id
       );
       if (index === -1) {
-        this.pizza1.ingredients.push({ quantity: 1, ingredientId: id });
+        this.pizza.ingredients.push({ quantity: 1, ingredientId: id });
       } else {
         if (sign === "+") {
-          this.pizza1.ingredients[index].quantity += 1;
+          this.pizza.ingredients[index].quantity += 1;
         } else {
-          this.pizza1.ingredients[index].quantity -= 1;
+          this.pizza.ingredients[index].quantity -= 1;
         }
       }
     },
     selectSauce(id) {
-      this.pizza1.sauceId = id;
+      this.pizza.sauceId = id;
     },
     moveIngedient(ingredient) {
-      const ingredientValue = this.pizza1.ingredients.find(
+      const ingredientValue = this.pizza.ingredients.find(
         (item) => item.ingredientId === ingredient.id
       );
       if (ingredientValue?.quantity < 3 || !ingredientValue) {

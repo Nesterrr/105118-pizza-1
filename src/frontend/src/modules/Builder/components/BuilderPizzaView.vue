@@ -7,13 +7,11 @@
     >
       <div class="pizza__wrapper">
         <div
-          v-for="ingredient in currentIngredients.filter((currentIngredient) =>
-            Boolean(currentIngredient.quantity)
-          )"
-          :key="ingredient.ingredientId"
+          v-for="ingredient in actualIngredients"
+          :key="`${ingredient.id}${ingredient.index}`"
           :class="`pizza__filling pizza__filling--${getIngredientNameById(
-            ingredient.ingredientId
-          )} ${getIngredienClasstModificator(ingredient.quantity)}`"
+            ingredient.id
+          )} ${getIngredienClasstModificator(ingredient.index)}`"
         ></div>
       </div>
     </div>
@@ -42,15 +40,21 @@ export default {
   },
   computed: {
     actualIngredients() {
-      return this.ingredients.filter(({ quantity }) => Boolean(quantity));
+      const result = [];
+      this.currentIngredients.forEach((item) => {
+        Array.from({ length: item.quantity }, item.id).forEach((_junk, index) =>
+          result.push({ id: item.ingredientId, index: index })
+        );
+      });
+      return result;
     },
   },
   methods: {
-    getIngredienClasstModificator(quantity) {
-      switch (quantity) {
-        case 2:
+    getIngredienClasstModificator(index) {
+      switch (index) {
+        case 1:
           return `pizza__filling--second`;
-        case 3:
+        case 2:
           return `pizza__filling--third`;
         default:
           return "";
@@ -70,6 +74,15 @@ export default {
     },
   },
 };
+// <div
+//  v-for="ingredient in currentIngredients.filter((currentIngredient) =>
+//    Boolean(currentIngredient.quantity)
+//  )"
+//  :key="ingredient.ingredientId"
+//  :class="`pizza__filling pizza__filling--${getIngredientNameById(
+//    ingredient.ingredientId
+//  )} ${getIngredienClasstModificator(ingredient.quantity)}`"
+//></div>
 </script>
 <style scoped>
 @import "~@/assets/scss/blocks/pizza.scss";
