@@ -2,19 +2,13 @@
   <div class="content__constructor">
     <div :class="`pizza pizza--foundation--${size}-${sauce}`">
       <div class="pizza__wrapper">
-        <div v-for="ingredient in actualIngredients" :key="ingredient.id">
-          <div
-            v-for="ingredientItem in Array.from(
-              { length: ingredient.quantity },
-              (_junk, index) => index
-            )"
-            :key="ingredientItem"
-            :class="`pizza__filling pizza__filling--${getIngredienClasstModificator(
-              ingredient.ingridientName,
-              ingredientItem
-            )}`"
-          ></div>
-        </div>
+        <div
+          v-for="ingredient in actualIngredients"
+          :key="`${ingredient.id}-${ingredient.index}`"
+          :class="`pizza__filling pizza__filling--${
+            ingredient.ingredientName
+          } pizza__filling${getIngredienClasstModificator(ingredient.index)}`"
+        ></div>
       </div>
     </div>
   </div>
@@ -38,20 +32,30 @@ export default {
   },
   computed: {
     actualIngredients() {
-      return this.ingredients.filter(({ quantity }) => Boolean(quantity));
+      const result = [];
+      this.ingredients
+        .filter((item) => item.quantity)
+        .forEach((element) => {
+          Array.from({ length: element.quantity }, () => ({
+            id: element.id,
+            quantity: element.quantity,
+            ingredientName: element.ingredientName,
+          })).forEach((item, index) => {
+            result.push({ ...item, index });
+          });
+        });
+      return result;
     },
   },
   methods: {
-    getIngredienClasstModificator(ingredient, index) {
+    getIngredienClasstModificator(index) {
       switch (index) {
-        case 0:
-          return ingredient;
         case 1:
-          return `${ingredient}--second`;
+          return "--second";
         case 2:
-          return `${ingredient}--third`;
+          return "--third";
         default:
-          return ingredient;
+          return "";
       }
     },
   },

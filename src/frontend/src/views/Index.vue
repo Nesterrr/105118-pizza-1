@@ -47,7 +47,7 @@ import BuilderIngredientsSelector from "@/modules/Builder/components/BuilderIngr
 import BuilderPizzaView from "@/modules/Builder/components/BuilderPizzaView";
 import BuilderPriceCounter from "@/modules/Builder/components/BuilderPriceCounter";
 import pizza from "@/static/pizza.json";
-import { sizes, dough, sauces, ingridients } from "./helper";
+import { sizes, dough, sauces, ingredients } from "./helper";
 
 export default {
   name: "Index",
@@ -62,9 +62,9 @@ export default {
     BuilderPriceCounter,
   },
   data() {
-    const ingredients = pizza.ingredients.map((ingridient, index) => ({
-      ...ingridient,
-      ingridientName: ingridients[index],
+    const extendedIngredients = pizza.ingredients.map((ingredient, index) => ({
+      ...ingredient,
+      ingredientName: ingredients[index],
       quantity: 0,
     }));
     return {
@@ -72,7 +72,7 @@ export default {
         ...doughVariant,
         scale: dough[index],
       })),
-      ingredients,
+      ingredients: extendedIngredients,
       sauces: pizza.sauces.map((sauce, index) => ({
         ...sauce,
         sauceVariant: sauces[index],
@@ -94,7 +94,7 @@ export default {
           price: 0,
           sauceName: "tomato",
         },
-        ingredients,
+        ingredients: extendedIngredients,
       },
       price: 0,
     };

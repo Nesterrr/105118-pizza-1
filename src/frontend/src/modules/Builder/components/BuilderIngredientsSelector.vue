@@ -32,7 +32,7 @@
               :key="ingredient.id"
             >
               <SelectorItem
-                :ingridientName="ingredient.ingridientName"
+                :ingredientName="ingredient.ingredientName"
                 :name="ingredient.name"
               />
 

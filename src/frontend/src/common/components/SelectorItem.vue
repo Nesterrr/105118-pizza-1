@@ -1,5 +1,5 @@
 <template>
-  <span :class="`filling filling--${ingridientName}`">
+  <span :class="`filling filling--${ingredientName}`">
     {{ name }}
   </span>
 </template>
@@ -11,7 +11,7 @@ export default {
       type: String,
       default: "",
     },
-    ingridientName: {
+    ingredientName: {
       type: String,
       default: "",
     },
