@@ -9,13 +9,13 @@
     <body>
       <AppLayoutHeader />
       <AppLayoutMain>
-        <BuilderDoughSelector :dough="dough" @selectDough="selectDough" />
-        <BuilderSizeSelector :sizes="sizes" @selectSize="selectSize" />
+        <BuilderDoughSelector :dough="dough" @selectDough="onSelectDough" />
+        <BuilderSizeSelector :sizes="sizes" @selectSize="onSelectSize" />
         <BuilderIngredientsSelector
           :sauces="sauces"
           :ingredients="ingredients"
-          @selectIngredient="selectIngredient"
-          @selectSauce="selectSauce"
+          @selectIngredient="onSelectIngredient"
+          @selectSauce="onSelectSauce"
         />
         <AppLayoutContent>
           <label class="input">
@@ -26,11 +26,13 @@
               placeholder="Введите название пиццы"
             />
           </label>
-          <BuilderPizzaView
-            :ingredients="pizza.ingredients"
-            :size="`${pizza.dough.scale === 'light' ? 'small' : 'big'}`"
-            :sauce="pizza.sauce.sauceVariant"
-          />
+          <AppDrop @drop="moveIngedient">
+            <BuilderPizzaView
+              :ingredients="pizza.ingredients"
+              :size="`${pizza.dough.scale === 'light' ? 'small' : 'big'}`"
+              :sauce="pizza.sauce.sauceVariant"
+            />
+          </AppDrop>
           <BuilderPriceCounter :price="getPizzaPrice" />
         </AppLayoutContent>
       </AppLayoutMain>
@@ -46,8 +48,15 @@ import BuilderSizeSelector from "@/modules/Builder/components/BuilderSizeSelecto
 import BuilderIngredientsSelector from "@/modules/Builder/components/BuilderIngredientsSelector";
 import BuilderPizzaView from "@/modules/Builder/components/BuilderPizzaView";
 import BuilderPriceCounter from "@/modules/Builder/components/BuilderPriceCounter";
+import AppDrop from "@/common/components/AppDrop";
 import pizza from "@/static/pizza.json";
-import { sizes, dough, sauces, ingredients } from "./helper";
+import {
+  sizes,
+  dough,
+  sauces,
+  ingredients,
+  MAX_IGREDIENT_QUANTITY,
+} from "./helper";
 
 export default {
   name: "Index",
@@ -60,6 +69,7 @@ export default {
     BuilderIngredientsSelector,
     BuilderPizzaView,
     BuilderPriceCounter,
+    AppDrop,
   },
   data() {
     const extendedIngredients = pizza.ingredients.map((ingredient, index) => ({
@@ -96,7 +106,6 @@ export default {
         },
         ingredients: extendedIngredients,
       },
-      price: 0,
     };
   },
   computed: {
@@ -114,35 +123,49 @@ export default {
     },
   },
   methods: {
-    selectDough(param) {
+    onSelectDough(param) {
       this.pizza = {
         ...this.pizza,
         dough: this.dough.find((item) => item.id === param.id),
       };
     },
-    selectSize(param) {
+    onSelectSize(param) {
       this.pizza = {
         ...this.pizza,
         size: this.sizes.find((item) => item.id === param.id),
       };
     },
-    selectIngredient(param, sign) {
+    changeIngredientAmount(index, sign) {
+      const deltaWithSign = Math.sign(`${sign}1`);
+      this.pizza.ingredients[index].quantity =
+        this.pizza.ingredients[index].quantity + deltaWithSign;
+    },
+    onSelectIngredient(param, sign) {
       const index = this.pizza.ingredients.findIndex(
         (elem) => elem.id === param.id
       );
-      if (sign === "+") {
-        this.pizza.ingredients[index].quantity =
-          this.pizza.ingredients[index].quantity + 1;
-      } else {
-        this.pizza.ingredients[index].quantity =
-          this.pizza.ingredients[index].quantity - 1;
-      }
+      this.changeIngredientAmount(index, sign);
     },
-    selectSauce(param) {
+    onSelectSauce(param) {
       this.pizza = {
         ...this.pizza,
         sauce: this.sauces.find((item) => item.id === param.id),
       };
+    },
+    moveIngedient(ingredient) {
+      const ingredientValue = this.pizza.ingredients.find(
+        (item) => item.id === ingredient.id
+      );
+
+      if (
+        ingredientValue?.quantity < MAX_IGREDIENT_QUANTITY ||
+        !ingredientValue
+      ) {
+        const index = this.pizza.ingredients.findIndex(
+          (elem) => elem.id === ingredientValue.id
+        );
+        this.changeIngredientAmount(index, "+");
+      }
     },
   },
 };

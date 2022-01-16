@@ -31,11 +31,12 @@
               v-for="ingredient in ingredients"
               :key="ingredient.id"
             >
-              <SelectorItem
-                :ingredientName="ingredient.ingredientName"
-                :name="ingredient.name"
-              />
-
+              <AppDrag :transfer-data="ingredient">
+                <SelectorItem
+                  :ingredientName="ingredient.ingredientName"
+                  :name="ingredient.name"
+                />
+              </AppDrag>
               <div class="counter counter--orange ingredients__counter">
                 <button
                   type="button"
@@ -66,6 +67,7 @@
 import RadioButton from "@/common/components/RadioButton";
 import SelectorItem from "@/common/components/SelectorItem";
 import CounterInput from "@/common/components/CounterInput";
+import AppDrag from "@/common/components/AppDrag";
 
 export default {
   name: "BuilderIngredientsSelector",
@@ -73,6 +75,7 @@ export default {
     RadioButton,
     SelectorItem,
     CounterInput,
+    AppDrag,
   },
   props: {
     sauces: {
