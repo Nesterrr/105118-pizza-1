@@ -18,4 +18,3 @@ export const ingredients = [
   "parmesan",
   "blue_cheese",
 ];
-export const MAX_IGREDIENT_QUANTITY = 3;

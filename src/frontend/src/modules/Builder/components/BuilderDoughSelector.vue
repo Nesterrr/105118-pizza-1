@@ -17,6 +17,7 @@
             :value="doughVariant.scale"
             className="visually-hidden"
             @click="onSelectDough(doughVariant)"
+            :checked="selectedDough.scale === doughVariant.scale"
           />
           <b>{{ doughVariant.name }}</b>
           <span>Из твердых сортов пшеницы</span>
@@ -35,6 +36,10 @@ export default {
   props: {
     dough: {
       type: Array,
+      required: true,
+    },
+    selectedDough: {
+      type: Object,
       required: true,
     },
   },

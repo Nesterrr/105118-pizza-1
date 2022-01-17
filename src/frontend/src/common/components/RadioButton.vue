@@ -5,6 +5,7 @@
     :value="value"
     @click="onClick"
     :class="className"
+    :checked="checked"
   />
 </template>
 
@@ -24,10 +25,14 @@ export default {
       type: String,
       default: "",
     },
+    checked: {
+      type: Boolean,
+      required: true,
+    },
   },
   methods: {
     onClick() {
-      this.$listeners.click();
+      this.$emit("click");
     },
   },
 };

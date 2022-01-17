@@ -15,6 +15,7 @@
             :value="size.scale"
             className="visually-hidden"
             @click="$emit('selectSize', size)"
+            :checked="selectedSize.scale === size.scale"
           />
           <span>{{ size.name }}</span>
         </label>
@@ -33,6 +34,10 @@ export default {
   props: {
     sizes: {
       type: Array,
+      required: true,
+    },
+    selectedSize: {
+      type: Object,
       required: true,
     },
   },

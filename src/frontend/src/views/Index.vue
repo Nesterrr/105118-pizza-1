@@ -9,13 +9,22 @@
     <body>
       <AppLayoutHeader />
       <AppLayoutMain>
-        <BuilderDoughSelector :dough="dough" @selectDough="onSelectDough" />
-        <BuilderSizeSelector :sizes="sizes" @selectSize="onSelectSize" />
+        <BuilderDoughSelector
+          :dough="dough"
+          @selectDough="onSelectDough"
+          :selectedDough="pizza.dough"
+        />
+        <BuilderSizeSelector
+          :sizes="sizes"
+          @selectSize="onSelectSize"
+          :selectedSize="pizza.size"
+        />
         <BuilderIngredientsSelector
           :sauces="sauces"
           :ingredients="ingredients"
           @selectIngredient="onSelectIngredient"
           @selectSauce="onSelectSauce"
+          :selectedSauce="pizza.sauce"
         />
         <AppLayoutContent>
           <label class="input">
@@ -50,13 +59,7 @@ import BuilderPizzaView from "@/modules/Builder/components/BuilderPizzaView";
 import BuilderPriceCounter from "@/modules/Builder/components/BuilderPriceCounter";
 import AppDrop from "@/common/components/AppDrop";
 import pizza from "@/static/pizza.json";
-import {
-  sizes,
-  dough,
-  sauces,
-  ingredients,
-  MAX_IGREDIENT_QUANTITY,
-} from "./helper";
+import { sizes, dough, sauces, ingredients } from "./helper";
 
 export default {
   name: "Index",
@@ -93,16 +96,16 @@ export default {
       })),
       pizza: {
         dough: {
-          price: 0,
-          scale: "small",
+          price: 300,
+          scale: "light",
         },
         size: {
           multiplier: 1,
-          scale: "big",
+          scale: "small",
         },
         sauce: {
-          price: 0,
-          sauceName: "tomato",
+          price: 50,
+          sauceVariant: "tomato",
         },
         ingredients: extendedIngredients,
       },
@@ -124,16 +127,10 @@ export default {
   },
   methods: {
     onSelectDough(param) {
-      this.pizza = {
-        ...this.pizza,
-        dough: this.dough.find((item) => item.id === param.id),
-      };
+      this.pizza.dough = this.dough.find((item) => item.id === param.id);
     },
     onSelectSize(param) {
-      this.pizza = {
-        ...this.pizza,
-        size: this.sizes.find((item) => item.id === param.id),
-      };
+      this.pizza.size = this.sizes.find((item) => item.id === param.id);
     },
     changeIngredientAmount(index, sign) {
       const deltaWithSign = Math.sign(`${sign}1`);
@@ -147,25 +144,17 @@ export default {
       this.changeIngredientAmount(index, sign);
     },
     onSelectSauce(param) {
-      this.pizza = {
-        ...this.pizza,
-        sauce: this.sauces.find((item) => item.id === param.id),
-      };
+      this.pizza.sauce = this.sauces.find((item) => item.id === param.id);
     },
     moveIngedient(ingredient) {
       const ingredientValue = this.pizza.ingredients.find(
         (item) => item.id === ingredient.id
       );
 
-      if (
-        ingredientValue?.quantity < MAX_IGREDIENT_QUANTITY ||
-        !ingredientValue
-      ) {
-        const index = this.pizza.ingredients.findIndex(
-          (elem) => elem.id === ingredientValue.id
-        );
-        this.changeIngredientAmount(index, "+");
-      }
+      const index = this.pizza.ingredients.findIndex(
+        (elem) => elem.id === ingredientValue.id
+      );
+      this.changeIngredientAmount(index, "+");
     },
   },
 };

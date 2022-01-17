@@ -17,6 +17,7 @@
               name="sauce"
               :value="sauce.sauceVariant"
               @click="onSelectSauce(sauce)"
+              :checked="selectedSauce.sauceVariant === sauce.sauceVariant"
             />
             <span>{{ sauce.name }}</span>
           </label>
@@ -31,7 +32,10 @@
               v-for="ingredient in ingredients"
               :key="ingredient.id"
             >
-              <AppDrag :transfer-data="ingredient">
+              <AppDrag
+                :transfer-data="ingredient"
+                :draggable="isDruggable(ingredient.quantity)"
+              >
                 <SelectorItem
                   :ingredientName="ingredient.ingredientName"
                   :name="ingredient.name"
@@ -51,7 +55,7 @@
                   type="button"
                   class="counter__button counter__button--plus"
                   @click="onSelectIngredient(ingredient, '+')"
-                  :disabled="ingredient.quantity >= 3"
+                  :disabled="isButtonDisabled(ingredient.quantity)"
                 >
                   <span class="visually-hidden">Больше</span>
                 </button>
@@ -68,6 +72,7 @@ import RadioButton from "@/common/components/RadioButton";
 import SelectorItem from "@/common/components/SelectorItem";
 import CounterInput from "@/common/components/CounterInput";
 import AppDrag from "@/common/components/AppDrag";
+import { MAX_IGREDIENT_QUANTITY } from "@/modules/Builder/helper";
 
 export default {
   name: "BuilderIngredientsSelector",
@@ -86,6 +91,10 @@ export default {
       type: Array,
       required: true,
     },
+    selectedSauce: {
+      type: Object,
+      required: true,
+    },
   },
   methods: {
     onSelectIngredient(ingredient, sign) {
@@ -93,6 +102,12 @@ export default {
     },
     onSelectSauce(sauce) {
       this.$emit("selectSauce", sauce);
+    },
+    isButtonDisabled(quantity) {
+      return quantity >= MAX_IGREDIENT_QUANTITY;
+    },
+    isDruggable(quantity) {
+      return quantity < MAX_IGREDIENT_QUANTITY;
     },
   },
 };
