@@ -1,0 +1,1 @@
+export const MAX_IGREDIENT_QUANTITY = 3;
