@@ -3,7 +3,7 @@
     type="radio"
     :name="name"
     :value="value"
-    @click="onClick"
+    @click="$emit('click')"
     :class="className"
     :checked="checked"
   />
@@ -12,6 +12,10 @@
 <script>
 export default {
   name: "RadioButton",
+  model: {
+    prop: "value",
+    event: "click",
+  },
   props: {
     name: {
       type: String,
@@ -28,11 +32,6 @@ export default {
     checked: {
       type: Boolean,
       required: true,
-    },
-  },
-  methods: {
-    onClick() {
-      this.$emit("click");
     },
   },
 };

@@ -15,7 +15,7 @@
             <RadioButton
               type="radio"
               name="sauce"
-              :value="sauce.sauceVariant"
+              v-model="sauce.sauceVariant"
               @click="onSelectSauce(sauce)"
               :checked="selectedSauce.sauceVariant === sauce.sauceVariant"
             />

@@ -12,7 +12,7 @@
           <RadioButton
             type="radio"
             name="diameter"
-            :value="size.scale"
+            v-model="size.scale"
             className="visually-hidden"
             @click="$emit('selectSize', size)"
             :checked="selectedSize.scale === size.scale"
