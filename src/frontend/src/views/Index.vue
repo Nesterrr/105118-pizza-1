@@ -7,7 +7,9 @@
       <title>V!U!E! Pizza - главная</title>
     </head>
     <body>
-      <AppLayoutHeader />
+      <AppLayoutHeader>
+        <router-view />
+      </AppLayoutHeader>
       <AppLayoutMain>
         <BuilderDoughSelector
           :dough="dough"

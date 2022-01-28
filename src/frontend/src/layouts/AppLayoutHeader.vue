@@ -42,11 +42,10 @@
         ><span>Войти</span>
       </router-link>
     </div>
-    <router-view />
+    <slot />
   </header>
 </template>
 <script>
-// нормально ли что <router-view /> в layout-e?
 export default {
   name: "AppLayoutHeader",
 };
