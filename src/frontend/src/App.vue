@@ -8,6 +8,10 @@
 <script>
 export default {
   name: "App",
+  created() {
+    // Note: fetch initial data
+    this.$store.dispatch("init");
+  },
 };
 </script>
 

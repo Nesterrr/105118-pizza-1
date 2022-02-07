@@ -9,15 +9,15 @@
 
           <label
             class="radio ingredients__input"
-            v-for="sauce in sauces"
+            v-for="sauce in pizza.sauces"
             :key="sauce.id"
           >
             <RadioButton
               type="radio"
               name="sauce"
               :value="sauce.sauceVariant"
-              @click="onSelectSauce(sauce)"
-              :checked="selectedSauce.sauceVariant === sauce.sauceVariant"
+              @click="selectSauce(sauce)"
+              :checked="builder.sauce.sauceVariant === sauce.sauceVariant"
             />
             <span>{{ sauce.name }}</span>
           </label>
@@ -29,12 +29,12 @@
           <ul class="ingredients__list">
             <li
               class="ingredients__item"
-              v-for="ingredient in ingredients"
+              v-for="(ingredient, index) in pizza.ingredients"
               :key="ingredient.id"
             >
               <AppDrag
                 :transfer-data="ingredient"
-                :draggable="isDruggable(ingredient.quantity)"
+                :draggable="isDruggable(builder.ingredients[index].quantity)"
               >
                 <SelectorItem
                   :ingredientName="ingredient.ingredientName"
@@ -45,17 +45,22 @@
                 <button
                   type="button"
                   class="counter__button counter__button--minus"
-                  @click="onSelectIngredient(ingredient, '-')"
-                  :disabled="ingredient.quantity === 0"
+                  @click="selectIngredient({ ingredient, sign: '-' })"
+                  :disabled="builder.ingredients[index].quantity === 0"
                 >
                   <span class="visually-hidden">Меньше</span>
                 </button>
-                <CounterInput name="counter" :value="ingredient.quantity" />
+                <CounterInput
+                  name="counter"
+                  :value="`${builder.ingredients[index].quantity}`"
+                />
                 <button
                   type="button"
                   class="counter__button counter__button--plus"
-                  @click="onSelectIngredient(ingredient, '+')"
-                  :disabled="isButtonDisabled(ingredient.quantity)"
+                  @click="selectIngredient({ ingredient, sign: '+' })"
+                  :disabled="
+                    isButtonDisabled(builder.ingredients[index].quantity)
+                  "
                 >
                   <span class="visually-hidden">Больше</span>
                 </button>
@@ -68,6 +73,7 @@
   </div>
 </template>
 <script>
+import { mapActions, mapState } from "vuex";
 import RadioButton from "@/common/components/RadioButton";
 import SelectorItem from "@/common/components/SelectorItem";
 import CounterInput from "@/common/components/CounterInput";
@@ -82,27 +88,15 @@ export default {
     CounterInput,
     AppDrag,
   },
-  props: {
-    sauces: {
-      type: Array,
-      required: true,
-    },
-    ingredients: {
-      type: Array,
-      required: true,
-    },
-    selectedSauce: {
-      type: Object,
-      required: true,
-    },
+  computed: {
+    ...mapState(["pizza"]),
+    ...mapState("Builder", ["builder"]),
   },
   methods: {
-    onSelectIngredient(ingredient, sign) {
-      this.$emit("selectIngredient", ingredient, sign);
-    },
-    onSelectSauce(sauce) {
-      this.$emit("selectSauce", sauce);
-    },
+    ...mapActions("Builder", {
+      selectSauce: "setSauce",
+      selectIngredient: "updateIngredientAmount",
+    }),
     isButtonDisabled(quantity) {
       return quantity >= MAX_IGREDIENT_QUANTITY;
     },

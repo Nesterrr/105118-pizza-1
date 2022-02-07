@@ -8,7 +8,7 @@
           :class="`
             dough__input dough__input--${doughVariant.scale}
           `"
-          v-for="doughVariant in dough"
+          v-for="doughVariant in pizza.dough"
           :key="doughVariant.id"
         >
           <RadioButton
@@ -17,7 +17,7 @@
             :value="doughVariant.scale"
             className="visually-hidden"
             @click="onSelectDough(doughVariant)"
-            :checked="selectedDough.scale === doughVariant.scale"
+            :checked="builder.dough.scale === doughVariant.scale"
           />
           <b>{{ doughVariant.name }}</b>
           <span>Из твердых сортов пшеницы</span>
@@ -27,25 +27,23 @@
   </div>
 </template>
 <script>
+import { mapActions, mapState } from "vuex";
 import RadioButton from "@/common/components/RadioButton";
 export default {
   name: "BuilderDoughSelector",
   components: {
     RadioButton,
   },
-  props: {
-    dough: {
-      type: Array,
-      required: true,
-    },
-    selectedDough: {
-      type: Object,
-      required: true,
-    },
+  computed: {
+    ...mapState(["pizza"]),
+    ...mapState("Builder", ["builder"]),
   },
   methods: {
-    onSelectDough(doughVariant) {
-      this.$emit("selectDough", doughVariant);
+    ...mapActions("Builder", {
+      selectDough: "setDough",
+    }),
+    async onSelectDough(doughVariant) {
+      await this.selectDough(doughVariant);
     },
   },
 };

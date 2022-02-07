@@ -1,0 +1,3 @@
+export const SET_ENTITY = "SET_ENTITY";
+export const UPDATE_PIZZA = "UPDATE_PIZZA";
+export const UPDATE_INGREDIENT = "UPDATE_INGREDIENT";

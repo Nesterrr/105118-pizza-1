@@ -1,16 +1,17 @@
 <template>
   <div class="content__result">
-    <p>Итого: {{ price }} ₽</p>
+    <p>Итого: {{ getTotalPrice }} ₽</p>
     <button type="button" class="button" disabled>Готовьте!</button>
   </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "BuilderPriceCounter",
-  props: {
-    price: {
-      type: Number,
-      default: 0,
+  computed: {
+    ...mapGetters("Builder", ["totalPrice"]),
+    getTotalPrice() {
+      return this.totalPrice;
     },
   },
 };

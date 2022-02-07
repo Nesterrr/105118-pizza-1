@@ -1,7 +1,7 @@
-export const sizes = ["small", "normal", "big"];
-export const dough = ["light", "large"];
-export const sauces = ["tomato", "creamy"];
-export const ingredients = [
+export const sizesList = ["small", "normal", "big"];
+export const doughList = ["light", "large"];
+export const saucesList = ["tomato", "creamy"];
+export const ingredientsList = [
   "mushrooms",
   "cheddar",
   "salami",

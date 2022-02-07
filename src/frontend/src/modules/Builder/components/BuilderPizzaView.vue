@@ -1,6 +1,10 @@
 <template>
   <div class="content__constructor">
-    <div :class="`pizza pizza--foundation--${size}-${sauce}`">
+    <div
+      :class="`pizza pizza--foundation--${
+        builder.dough.scale === 'light' ? 'small' : 'big'
+      }-${builder.sauce.sauceVariant}`"
+    >
       <div class="pizza__wrapper">
         <div
           v-for="ingredient in actualIngredients"
@@ -14,26 +18,14 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 export default {
   name: "BuilderPizzaView",
-  props: {
-    ingredients: {
-      type: Array,
-      required: true,
-    },
-    size: {
-      type: String,
-      default: "big",
-    },
-    sauce: {
-      type: String,
-      default: "tomato",
-    },
-  },
   computed: {
+    ...mapState("Builder", ["builder"]),
     actualIngredients() {
       const result = [];
-      this.ingredients
+      this.builder.ingredients
         .filter((item) => item.quantity)
         .forEach((element) => {
           Array.from({ length: element.quantity }, () => ({

@@ -17,8 +17,8 @@ export default {
       required: true,
     },
     value: {
-      type: Number,
-      default: 0,
+      type: String,
+      default: "0",
     },
     className: {
       type: String,
