@@ -48,19 +48,15 @@ export default {
       const { scale, multiplier } = rootState.pizza.sizes.find(
         (item) => item.id === size.id
       );
-      commit(
-        UPDATE_PIZZA,
-        {
-          ...namespace,
-          value: {
-            size: {
-              scale,
-              multiplier,
-            },
+      commit(UPDATE_PIZZA, {
+        ...namespace,
+        value: {
+          size: {
+            scale,
+            multiplier,
           },
         },
-        { root: true }
-      );
+      });
     },
     setSauce({ commit, rootState }, sauce) {
       const { price, sauceVariant } = rootState.pizza.sauces.find(
@@ -85,17 +81,13 @@ export default {
         (elem) => elem.id === data.ingredient.id
       );
       const deltaWithSign = Math.sign(`${data.sign}1`);
-      commit(
-        UPDATE_INGREDIENT,
-        {
-          ...namespace,
-          value: {
-            deltaWithSign,
-            index,
-          },
+      commit(UPDATE_INGREDIENT, {
+        ...namespace,
+        value: {
+          deltaWithSign,
+          index,
         },
-        { root: true }
-      );
+      });
     },
   },
   getters: {
@@ -109,6 +101,11 @@ export default {
           )) *
         size.multiplier
       );
+    },
+  },
+  mutations: {
+    [UPDATE_INGREDIENT](state, { entity, value: { index, deltaWithSign } }) {
+      state[entity].ingredients[index].quantity += deltaWithSign;
     },
   },
 };

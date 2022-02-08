@@ -1,10 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import {
-  SET_ENTITY,
-  UPDATE_PIZZA,
-  UPDATE_INGREDIENT,
-} from "@/store/mutations-types";
+import { SET_ENTITY, UPDATE_PIZZA } from "@/store/mutations-types";
 import modules from "@/store/modules";
 import { normalizePizza } from "@/common/helpers";
 import pizza from "@/static/pizza.json";
@@ -53,24 +49,6 @@ const mutations = {
         ...state[entity],
         ...value,
       };
-    }
-  },
-  [UPDATE_INGREDIENT](state, { module, entity, value }) {
-    if (module) {
-      const index = value.index;
-      if (~index) {
-        state[module][entity].ingredients[index].quantity =
-          state[module][entity].ingredients[index].quantity +
-          value.deltaWithSign;
-      }
-    } else {
-      const index = state[entity].ingredients.findIndex(
-        ({ id }) => id === value.id
-      );
-      if (~index) {
-        state[entity].ingredients[index].quantity =
-          state[entity].ingredients[index].quantity + value.deltaWithSign;
-      }
     }
   },
 };
